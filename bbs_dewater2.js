@@ -19,16 +19,21 @@ function add_dewater_banner() {
     var xp = banner_path();
     $dewater_div = $('\
         <div id="dewater_div_form" style="align:center;background: #cad6e1;">\
-        前<input id="max_page_num" name="max_page_num" size="3"/>页,\
-        前<input id="max_floor_num" name="max_floor_num" size="4"/>楼, \
-        每楼最少<input id="min_word_num" name="min_word_num" size="4"/>字,\
-        抽取<input size="8" type="text" name="floor_keyword_grep" id="floor_keyword_grep">,  \
-        过滤 <input size="8" type="text" name="floor_keyword_filter" id="floor_keyword_filter">,  \
-        <input type="checkbox" id="only_poster" name="only_poster">只看楼主,\
+        第<input id="min_page_num" name="min_page_num" size="3"/>-<input id="max_page_num" name="max_page_num" size="3"/>页,\
+        第<input id="min_floor_num" name="min_floor_num" size="4"/>-<input id="max_floor_num" name="max_floor_num" size="4"/>楼, \
+        <input type="checkbox" id="only_poster" name="only_poster">只看楼主, \
         <input type="checkbox" id="only_img" name="only_img">只看图,\
         <input type="checkbox" id="with_toc" name="with_toc" checked />目录, \
-        <input type="checkbox" id="export_txt" name="export_txt" /> txt, \
-        <input type="submit" value="脱水" onclick="dewater_thread()" />\
+        楼层最少<input id="min_word_num" name="min_word_num" size="4"/>字,\
+        抽取<input size="8" type="text" name="floor_keyword_grep" id="floor_keyword_grep">,  \
+        过滤 <input size="8" type="text" name="floor_keyword_filter" id="floor_keyword_filter">,  \
+        只看层主<input size="8" type="text" name="poster_keyword_grep" id="poster_keyword_grep">,\
+        <select id="dst" name="dst"> \
+        <option value="web" selected="selected">web</option> \
+        <option value="txt">txt</option> \
+        <option value="html">html</option> \
+        </select>, \
+        <input type="submit" value="脱水" onclick="dewater_thread()" /> \
         </div>');
         $(xp).before($dewater_div);
 
@@ -45,14 +50,17 @@ function add_dewater_banner() {
 
 function get_dewater_option() {
     return {
+        min_page_num: parseInt($("#min_page_num")[0].value),
         max_page_num: parseInt($("#max_page_num")[0].value),
+        min_floor_num: parseInt($("#min_floor_num")[0].value),
         max_floor_num: parseInt($("#max_floor_num")[0].value),
         only_poster: $("#only_poster")[0].checked,
+        poster_keyword_grep: $("#poster_keyword_grep")[0].value + '', 
         only_img: $("#only_img")[0].checked,
-        floor_keyword_grep : $("#floor_keyword_grep")[0].value + '', 
-        floor_keyword_filter : $("#floor_keyword_filter")[0].value + '', 
+        floor_keyword_grep: $("#floor_keyword_grep")[0].value + '', 
+        floor_keyword_filter: $("#floor_keyword_filter")[0].value + '', 
         with_toc: $("#with_toc")[0].checked,
-        export_txt: $("#export_txt")[0].checked,
+        dst: $("#dst")[0].value + '',
         min_word_num: parseInt($("#min_word_num")[0].value)
     };
 
@@ -97,8 +105,6 @@ function get_topic_url() {
 }
 
 function set_topic(tp, dst) {
-    //var tp = get_topic_name() ;
-    //alert(tp);
     var c = '<a href="' + get_topic_url() + '">' + tp + '</a>';
     $(dst).html(c);
     return tp;
@@ -126,12 +132,14 @@ function get_page_urls() {
 function select_page_urls(option) {
     var page_urls = get_page_urls();
 
-    if (!option.max_page_num) return page_urls;
+    if (!option.max_page_num && !option.min_page_num) return page_urls;
 
     var urls = new Array();
     var n = 1;
     for (var i in page_urls) {
-        if (n > option.max_page_num) break;
+        var j = parseInt(i)+1;
+        if (option.min_page_num && j < option.min_page_num) continue;
+        if (option.max_page_num && j > option.max_page_num) break;
         var u = page_urls[i];
         urls.push(u);
         ++n;
@@ -145,23 +153,30 @@ function is_floor_overflow(id, option) {
     return 1;
 }
 
+function is_floor_skip(id, option){
+    if (!option.min_floor_num) return 0;
+    if (id >= option.min_floor_num) return 0;
+    return 1;
+}
+
 function get_thread_floors(option) {
     var main_floors = new Array();
     var select_urls = select_page_urls(option);
-    var now_id = 1;
+
+    var now_id = 0;
     for (var i in select_urls) {
         var u = select_urls[i];
         var f = get_page_floors(u);
         var flen = f.length;
         for (var j = 0; j < flen; j++) {
+            now_id++;
             if( f[j].id==undefined ) f[j].id = now_id;
 
-            var id = f[j].id;
-            if (is_push_floor(main_floors, id)==false) continue;
-            if (is_floor_overflow(id, option)) return main_floors;
+            if (is_push_floor(main_floors, f[j].id)==false) continue;
+            if (is_floor_skip(f[j].id, option)) continue;
+            if (is_floor_overflow(f[j].id, option)) return main_floors;
 
             main_floors.push(f[j]);
-            now_id++;
         }
     }
     return main_floors;
@@ -177,6 +192,7 @@ function is_push_floor(floors_info, id){
 
 function is_skip_floor(f, opt) {
     if (opt.only_poster && (f.poster != opt.poster)) return 1;
+    if (opt.poster_keyword_grep.match(/\S/) && ! f.poster.match(opt.poster_keyword_grep)) return 1;
     if (opt.only_img && ! f.content.match(/\<img\s+/i)) return 1;
     if (opt.min_word_num && (f.word_num < opt.min_word_num)) return 1;
     if (opt.floor_keyword_grep.match(/\S/) && ! f.content.match(opt.floor_keyword_grep)) return 1;
@@ -201,11 +217,9 @@ function gen_floor_txt(f) {
 }
 
 function set_dewater_head(tp) {
-    $('head').html(
-        '<meta content="text/html; charset="' + page_charset() +'" http-equiv="Content-Type">' +
-        '<title>' + tp + '</title>' +
-        '<style>\
-        body { color: black;background-color: #d8e2c8;font-size: 28px; font-family: font-family: 微软雅黑,宋体,黑体,楷体,Verdana, Arial, Helvetica, sans-serif; padding: 0px; margin: 0px; text-indent: 2em; line-height: 135% }\n\
+    $('head').html('<meta content="text/html; charset=utf-8" http-equiv="Content-Type">\n<title>' + tp + 
+        '</title>\n<style>\n\
+        body { font-size: large; font-family: Verdana; Arial, Helvetica, sans-serif, margin: 1em 8em 1em 8em; text-indent: 2em; line-height: 150%; margin-left : 10%; margin-right: 10% }\n\
         .chapter,#dewater_title,#dewater_toc { margin: 0.8em 0.2em 1.4em 0.2em; text-indent: 0em; padding-bottom: 0.25em }\n\
         .chapter { border-top: 0.2em solid #ee9b73;}\n\
         #dewater_title { border-bottom: 0.2em solid #ee9b73; }\n\
@@ -250,7 +264,7 @@ function dewater_thread() {
         var f = main_floors[i];
         if (is_skip_floor(f, option)) continue;
 
-        if(option.export_txt){
+        if(option.dst=='txt'){
             gen_floor_txt(f);
         }else{
             gen_floor_html(f);
@@ -260,7 +274,7 @@ function dewater_thread() {
         final_content += f.floor;
     }
 
-    if(option.export_txt){
+    if(option.dst=='txt'){
         download(topic+'.txt', topic + "\n\n\n" + final_toc + "\n" + final_content);
     }else{
         set_topic(topic, '#dewater_title');
@@ -268,5 +282,8 @@ function dewater_thread() {
         $('#dewater_toc').html(final_toc);
         $('#dewater_floors').html(final_content);
         $('body').html($('#dewater_div').html());
+        if(option.dst=='html'){
+            download(topic+'.html', $('html')[0].outerHTML);
+        }
     }
 }
