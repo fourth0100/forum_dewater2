@@ -21,20 +21,10 @@ function floor_path() {
     return 'div#postlist>div>table';
 }
 
-//function page_charset() {
-//    var h = $('head').html();
-//    var h_m = h.match(/.*charset="(.*?)".*/);
-//    if(!h_m || h_m[1]) return 'gbk';
-//    return h_m[1];
-//}
 function page_charset() {
     var h = $('head').html();
     var h_m = h.match(/<meta[^>]+charset=['"]?(.*?)['"]?[\/\s>]/i);
-    //var h_m = h.match(/<meta.+?charset=[^\w]?([-\w]+)/i);
-	//alert(h_m);
-	//alert(h_m[1]);
     if(!h_m || !h_m[1]) return 'gbk';
-    //if(h_m[1]='(.*?)') return 'gbk';
     return h_m[1];
 }
 
