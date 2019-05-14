@@ -220,10 +220,10 @@ function set_dewater_head(tp) {
     $('head').html('<meta content="text/html; charset=utf-8" http-equiv="Content-Type">\n<title>' + tp + 
         '</title>\n<style>\n\
         body { font-size: 32px;background-color:#d3e2c8;font-size: large; font-family: Verdana; Arial, Helvetica, sans-serif,  text-indent: 2em; line-height: 160%; margin-left : 10px; margin-right: 10px }\n\
-        .chapter,#dewater_title,#dewater_toc { font-size: 32px;font-family: 微软雅黑,宋体,黑体,楷体;line-height: 160%;margin-left:1em;margin-right: 1em;padding-bottom: 15px; text-indent: 0em }\n\
+        .chapter,#dewater_title,#dewater_toc { font-size: 32px;font-size: 32px;font-family: 微软雅黑,宋体,黑体,楷体;line-height: 160%;margin-left:1em;margin-right: 1em;padding-bottom: 15px; text-indent: 0em }\n\
         .chapter { border-top: 0.2em solid #ee9b73;}\n\
         #dewater_title { border-bottom: 0.2em solid #ee9b73; }\n\
-        #dewater_toc { line-height: 115% }\n\
+        #dewater_toc {font-size: 32px; line-height: 160% }\n\
         #dewater_title { text-align: center; font-size: x-large}\n\
         .star { color: #99cc00; }\n\
         </style>'
