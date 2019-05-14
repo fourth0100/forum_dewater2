@@ -2,7 +2,7 @@
 //
 // ==UserScript==
 // @name          forum_dewater 
-// @version       0.1
+// @version       0.2
 // @description   forum 论坛贴子脱水
 // @copyright     fork by ：2013, Abby Pan (http://abbypan.github.com/) 
 // @grant         GM_getResourceText
