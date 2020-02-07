@@ -2,7 +2,7 @@
 //
 // ==UserScript==
 // @name          forum_dewater 
-// @version       0.4.1
+// @version       0.4.2
 // @description   forum 论坛贴子脱水
 // @copyright     fork by ：2013, Abby Pan (http://abbypan.github.com/) 
 // @grant         GM_getResourceText
@@ -10,7 +10,7 @@
 // @include       */thread-*-*-1.html
 // @resource      jquery http://code.jquery.com/jquery-latest.js
 // @resource      discuz_dewater https://github.com/fourth0100/forum_dewater/raw/master/discuz_dewater2.js
-// @resource      bbs_dewater https://github.com/fourth0100/forum_dewater/raw/master/bbs_dewater2.js
+// @resource      bbs_dewater https://github.com/fourth0100/forum_dewater/raw/master/bbs_dewater3.js
 // ==/UserScript==
 //
 // --------------------------------------------------------------------
