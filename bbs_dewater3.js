@@ -222,9 +222,11 @@ function gen_floor_txt(f) {
 }
 
 function set_dewater_head(tp) {
-    $('head').html('<meta content="text/html; charset=utf-8" http-equiv="Content-Type">\n<title>' + tp + 
-        '</title>\n<style>\n\
-        body { font-size: large; font-family: Verdana; Arial, Helvetica, sans-serif, margin: 1em 8em 1em 8em; text-indent: 2em; line-height: 150%; margin-left : 10%; margin-right: 10% }\n\
+    $('head').html(
+        '<meta content="text/html; charset="' + page_charset() +'" http-equiv="Content-Type">' +
+        '<title>' + tp + '</title>' +
+        '<style>\n\
+        body { background-color: #d8e2c8;color: black;font-size: 24px; font-family: Verdana; Arial, Helvetica, sans-serif, margin: 1em 8em 1em 8em; text-indent: 2em; line-height: 150%; margin-left : 10%; margin-right: 10% }\n\
         .chapter,#dewater_title,#dewater_toc { margin: 0.8em 0.2em 1.4em 0.2em; text-indent: 0em; padding-bottom: 0.25em }\n\
         .chapter { border-top: 0.2em solid #ee9b73;}\n\
         #dewater_title { border-bottom: 0.2em solid #ee9b73; }\n\
