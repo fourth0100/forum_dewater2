@@ -26,7 +26,7 @@ function add_dewater_banner() {
         <input type="checkbox" id="only_poster" name="only_poster">只看楼主, \
         <input type="checkbox" id="only_img" name="only_img">只看图,\
         <input type="checkbox" id="with_toc" name="with_toc" checked />目录, \
-        楼层最少<input id="min_word_num" name="min_word_num" size="4"/>字,\
+        楼层最少<input value="222" id="min_word_num" name="min_word_num" size="4"/>字,\
         抽取<input size="8" type="text" name="floor_keyword_grep" id="floor_keyword_grep">,  \
         过滤 <input size="8" type="text" name="floor_keyword_filter" id="floor_keyword_filter">,  \
         只看层主<input size="8" type="text" name="poster_keyword_grep" id="poster_keyword_grep">,\
