@@ -82,7 +82,7 @@ async function get_page_floors(u) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  await delay(2000); // 延时2秒
+  await delay(5000); // 延时2秒
 
   try {
     const response = await $.ajax({
