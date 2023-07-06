@@ -56,7 +56,7 @@ function add_dewater_banner() {
 
 
 
-function get_dewater_option() {
+function _dewater_option() {
     return {
         min_page_num: parseInt($("#min_page_num")[0].value),
         max_page_num: parseInt($("#max_page_num")[0].value),
@@ -78,34 +78,39 @@ function get_page_floors(u) {
     $('#dewater_title').html("正在取 ：" + u);
     var floors_info = new Array();
     var fp = floor_path();
-    $.ajax({
-        type: "get",
-        url: u,
-        cache: false,
-        async: false,
-        beforeSend: function(jqXHR) {
-            jqXHR.overrideMimeType('text/html; charset='+ page_charset());
-        },
-        success: function(data) {
-            if(window.tidy_body_html){
-                data = tidy_body_html(data);
-            }
-            var $resp = $(data);
 
-            $resp.find(fp).each(function() {
-                var bot = $(this);
-                var f_i = extract_floor_info(bot);
-                if(f_i){
-                    f_i.word_num = calc_word_num(f_i.content);
-                    floors_info.push(f_i);
+    // 使用 setTimeout 设置延时读取
+    setTimeout(function() {
+        $.ajax({
+            type: "get",
+            url: u,
+            cache: false,
+            async: false,
+            beforeSend: function(jqXHR) {
+                jqXHR.overrideMimeType('text/html; charset='+ page_charset());
+            },
+            success: function(data) {
+                if(window.tidy_body_html){
+                    data = tidy_body_html(data);
                 }
-            });
+                var $resp = $(data);
 
-        }
-    });
+                $resp.find(fp).each(function() {
+                    var bot = $(this);
+                    var f_i = extract_floor_info(bot);
+                    if(f_i){
+                        f_i.word_num = calc_word_num(f_i.content);
+                        floors_info.push(f_i);
+                    }
+                });
+
+            }
+        });
+    }, 5000); // 设置延时为2秒
 
     return floors_info;
 }
+
 
 
 function get_topic_url() {
