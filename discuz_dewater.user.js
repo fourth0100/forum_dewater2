@@ -1,13 +1,13 @@
 // --------------------------------------------------------------------
 //
 // ==UserScript==
-// @name          forum_dewater 
-// @version       0.4.5
+// @name          TT_dewater 
+// @version       0.0.1
 // @description   forum 论坛贴子脱水
 // @copyright     fork by ：2013, Abby Pan (http://abbypan.github.com/) 
 // @grant         GM_getResourceText
-// @include       *viewthread*
-// @include       */thread-*-*-1.html
+// @include       https://www.tt1069.com/bbs/*viewthread*
+// @include       https://www.tt1069.com/bbs/*/thread-*-*-1.html
 // @resource      jquery http://code.jquery.com/jquery-latest.js
 // @resource      discuz_dewater https://github.com/fourth0100/forum_dewater/raw/master/discuz_dewater2.js
 // @resource      bbs_dewater https://github.com/fourth0100/forum_dewater/raw/master/bbs_dewater3.js
