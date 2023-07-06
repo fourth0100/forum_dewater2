@@ -74,37 +74,42 @@ function _dewater_option() {
 
 }
 
-function get_page_floors(u) {
-    $('#dewater_title').html("正在取 ：" + u);
-    var floors_info = new Array();
-    var fp = floor_path();
-    $.ajax({
-        type: "get",
-        url: u,
-        cache: false,
-        async: false,
-        beforeSend: function(jqXHR) {
-            jqXHR.overrideMimeType('text/html; charset='+ page_charset());
-        },
-        success: function(data) {
-            if(window.tidy_body_html){
-                data = tidy_body_html(data);
-            }
-            var $resp = $(data);
+async function get_page_floors(u) {
+  $('#dewater_title').html("正在取 ：" + u);
+  var floors_info = [];
 
-            $resp.find(fp).each(function() {
-                var bot = $(this);
-                var f_i = extract_floor_info(bot);
-                if(f_i){
-                    f_i.word_num = calc_word_num(f_i.content);
-                    floors_info.push(f_i);
-                }
-            });
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-        }
+  await delay(2000); // 延时2秒
+
+  try {
+    const response = await $.ajax({
+      type: "get",
+      url: u,
+      cache: false,
+      beforeSend: function (jqXHR) {
+        jqXHR.overrideMimeType('text/html; charset=' + page_charset());
+      }
     });
 
-    return floors_info;
+    const $resp = $(response);
+    const fp = floor_path();
+
+    $resp.find(fp).each(function () {
+      var bot = $(this);
+      var f_i = extract_floor_info(bot);
+      if (f_i) {
+        f_i.word_num = calc_word_num(f_i.content);
+        floors_info.push(f_i);
+      }
+    });
+  } catch (error) {
+    console.log("请求出错:", error);
+  }
+
+  return floors_info;
 }
 
 
